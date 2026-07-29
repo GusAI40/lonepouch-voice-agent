@@ -22,6 +22,14 @@
 - **Model:** chat-latest
 - **Temperature:** 0.85
 
+## Infrastructure
+
+| Service | Detail |
+|---------|--------|
+| Vercel | `lonepouch-voice-tag-ai-projects.vercel.app` (SSO disabled) |
+| Supabase | `tag-ai-data` → `lonepouch_callers` |
+| Vapi Function Tool | `submitInquiry` → `https://lonepouch-voice-tag-ai-projects.vercel.app/api/submit` |
+
 ## System Prompt
 
 ```
@@ -65,6 +73,6 @@ Confident, knowledgeable, efficient. You know this product inside out. You recog
 |------|----|
 | getCallerMemory | 87ad6767-d79e-49af-8b6a-e8f587304c27 |
 | saveCallerMemory | e59e97a4-ff06-437c-89e3-3b333e6f5463 |
-| submitInquiry | 6f59c245-478d-42b0-9966-4318b74cd606 |
+| submitInquiry | 3669c1f4-ff2f-4c0e-be32-ead20e832903 |
 | transferToCarter | b64226a6-10a9-477f-a013-c6cb6d06692e |
 | getProductInfo | cd3f5ca9-9e16-41e0-b05b-64075cf44c3d |

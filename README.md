@@ -4,17 +4,18 @@ Vapi-powered voice AI customer service agent for LonePouch — The Clean Nicotin
 
 **Phone:** (817) 617-8911  
 **Agent:** Jess (male voice, Cartesia sonic-3.5)  
-**Status:** Phase 1 — Live
+**Status:** Phase 1 — Live  
+**Vercel:** `lonepouch-voice-tag-ai-projects.vercel.app`
 
 ---
 
 ## Architecture
 
 ```
-Caller → Twilio (817) 617-8911 → Vapi → OpenAI (LLM)
+Caller → Twilio (817) 617-8911) → Vapi → OpenAI (LLM)
                                           ├── getCallerMemory  → Supabase
                                           ├── getProductInfo   → (internal)
-                                          ├── submitInquiry    → Vercel → Resend → support@/sales@
+                                          ├── submitInquiry    → Vercel (lonepouch-voice) → Resend → support@/sales@
                                           ├── transferToCarter → Warm Transfer
                                           └── saveCallerMemory → Supabase
 ```
@@ -25,59 +26,48 @@ Caller → Twilio (817) 617-8911 → Vapi → OpenAI (LLM)
 |------|------|---------|
 | `getCallerMemory` | Code | Supabase lookup — greets returning callers by name |
 | `getProductInfo` | Code | Answers 14 FAQ categories from lonepouches.com |
-| `submitInquiry` | Function | Server-backed. Collects info + emails via Resend. **Keys in Vercel env, never exposed.** |
+| `submitInquiry` | Function → Vercel | Server-backed. Collects info + emails via Resend. **Keys in env, never in Vapi.** |
 | `transferToCarter` | TransferCall | Warm transfer to Carter (gated, no support xfers) |
 | `saveCallerMemory` | Code | Logs every call to Supabase |
 
 ## Security
 
-- `submitInquiry` runs on Vercel as a serverless function — Resend API key lives in Vercel environment variables, never in Vapi code
-- Supabase anon key is public by design (RLS-protected)
-- GitHub repo contains no real API keys (uses `.env.example` placeholders)
+- `submitInquiry` runs on dedicated Vercel project `lonepouch-voice` — Resend API key in Vercel env, never in Vapi
+- SSO disabled on Vercel project for Vapi API access
+- GitHub repo contains zero real API keys
 
 ## Deploy
 
-### 1. Vercel
 ```bash
+# Vercel
 vercel deploy
 vercel env add RESEND_API_KEY
-vercel env add FROM_EMAIL
-vercel env add SUPPORT_EMAIL  
-vercel env add SALES_EMAIL
+
+# Supabase
+# Run supabase/migration.sql
+
+# Vapi
+# Create tools from tools/ directory
+# Point submitInquiry Function tool to: https://lonepouch-voice-tag-ai-projects.vercel.app/api/submit
 ```
-
-### 2. Supabase
-Run `supabase/migration.sql` in your project.
-
-### 3. Vapi
-1. Create the `submitInquiry` Function tool pointing to `https://your-project.vercel.app/api/submit`
-2. Create the 4 Code tools from `tools/` directory
-3. Configure assistant using `AGENT.md`
-4. Assign phone number
 
 ## Files
 
 ```
 ├── README.md
-├── AGENT.md                    # Full agent configuration
-├── DELIVERABLE.md              # Client-facing delivery doc
-├── vercel.json                 # Vercel deployment config
+├── AGENT.md
+├── DELIVERABLE.md
+├── vercel.json
 ├── api/
-│   └── submit.js               # Server-backed submitInquiry (Resend)
-├── .env.example                # Environment variable template
+│   └── submit.js          # Server-backed submitInquiry
+├── .env.example
 ├── tools/
-│   ├── getCallerMemory.js      # Supabase caller lookup
-│   ├── getProductInfo.js       # Product FAQ (14 categories)
-│   └── saveCallerMemory.js     # Supabase call logging
+│   ├── getCallerMemory.js
+│   ├── getProductInfo.js
+│   └── saveCallerMemory.js
 ├── supabase/
-│   └── migration.sql           # lonepouch_callers table
+│   └── migration.sql
 └── .gitignore
 ```
 
-## Phase 2 (Planned)
-- Shopify order lookup via order number
-- SMS follow-up for wholesale (auto-send deck)
-- Voice-to-cart ordering
-
----
 Built by [TAG AI Solutions](https://tagaisolutions.com)

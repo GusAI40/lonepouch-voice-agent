@@ -1,7 +1,7 @@
 // Vapi Code Tool: saveCallerMemory
 // Logs every call to Supabase. Call at the END of every call.
 
-const SUPABASE_URL = "https://f1h4nc5zl4.supabase.co";
+const SUPABASE_URL = "YOUR_SUPABASE_URL";
 const SUPABASE_KEY = "YOUR_SUPABASE_ANON_KEY";
 
 const phone = args.phone.replace(/[^0-9]/g, "").slice(-10);
