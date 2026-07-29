@@ -1,0 +1,36 @@
+{
+  "type": "transferCall",
+  "function": {
+    "name": "transferToCarter",
+    "description": "Transfer caller to Carter. ONLY use when caller explicitly demands Carter AND it is NOT a customer support inquiry. Ask what it is regarding before transferring."
+  },
+  "destinations": [
+    {
+      "type": "number",
+      "number": "+16267417360",
+      "transferPlan": {
+        "mode": "warm-transfer-experimental",
+        "transferAssistant": {
+          "firstMessage": "Hey Carter, this is Jess from LonePouch. I have someone on the line who would like to speak with you. Are you available?",
+          "firstMessageMode": "assistant-speaks-first",
+          "maxDurationSeconds": 60,
+          "silenceTimeoutSeconds": 15,
+          "model": {
+            "provider": "openai",
+            "model": "gpt-4o",
+            "messages": [
+              {
+                "role": "system",
+                "content": "You are a transfer assistant for LonePouch. Connect the caller to Carter. If Carter confirms, complete the transfer. If unavailable, disconnect so Jess can take a message."
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "messages": [
+    { "type": "request-start", "content": "Let me connect you with Carter now. One moment please." },
+    { "type": "request-failed", "content": "Carter is unavailable right now. Let me take your information and he will reach out to you shortly." }
+  ]
+}
