@@ -27,10 +27,11 @@
 | Service | Detail |
 |---------|--------|
 | Vercel | `lonepouch-voice-tag-ai-projects.vercel.app` (SSO disabled) |
-| Supabase | `tag-ai-data` → `lonepouch_callers` |
+| Supabase | `tag-ai-data` → `lonepouch_callers` (RLS enabled, anon access) |
 | Vapi Function Tool | `submitInquiry` → `https://lonepouch-voice-tag-ai-projects.vercel.app/api/submit` |
+| Env Vars (Vercel) | RESEND_API_KEY, FROM_EMAIL, SUPPORT_EMAIL, SALES_EMAIL |
 
-## System Prompt
+## System Prompt (Live)
 
 ```
 You are Jess from LonePouch — The Clean Nicotine Pouch. Male voice. Confident and efficient.
@@ -69,10 +70,17 @@ Confident, knowledgeable, efficient. You know this product inside out. You recog
 ```
 
 ## Tool IDs
-| Tool | ID |
-|------|----|
-| getCallerMemory | 87ad6767-d79e-49af-8b6a-e8f587304c27 |
-| saveCallerMemory | e59e97a4-ff06-437c-89e3-3b333e6f5463 |
-| submitInquiry | 3669c1f4-ff2f-4c0e-be32-ead20e832903 |
-| transferToCarter | b64226a6-10a9-477f-a013-c6cb6d06692e |
-| getProductInfo | cd3f5ca9-9e16-41e0-b05b-64075cf44c3d |
+| Tool | ID | Type |
+|------|----|------|
+| getCallerMemory | 87ad6767-d79e-49af-8b6a-e8f587304c27 | Code |
+| saveCallerMemory | e59e97a4-ff06-437c-89e3-3b333e6f5463 | Code |
+| submitInquiry | 3669c1f4-ff2f-4c0e-be32-ead20e832903 | Function |
+| transferToCarter | b64226a6-10a9-477f-a013-c6cb6d06692e | TransferCall |
+| getProductInfo | cd3f5ca9-9e16-41e0-b05b-64075cf44c3d | Code |
+
+## Security
+- ✅ No API keys in GitHub repo
+- ✅ Resend key in Vercel env vars only (not in source)
+- ✅ SSO disabled on Vercel project
+- ✅ RLS enabled on Supabase with explicit anon policy
+- ✅ Supabase anon key in Vapi Code Tools (public by design)
